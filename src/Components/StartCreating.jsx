@@ -9,6 +9,7 @@ const StartCreating = () => {
   const history = useNavigate()
 
   const user = localStorage.getItem('userEmail');
+  const userId = localStorage.getItem('userId');
   useEffect(() => {
 
     if (!user) {
@@ -48,47 +49,67 @@ const StartCreating = () => {
           setBase64Image(data)
           setImgURL(data)
 
-          const imageEndPoint = "http://localhost:5000/api/saveImage";
+          if (data && data.length > 0) {
+            try {
+              const imageEndPoint = "http://localhost:5000/api/saveImage";
 
-          console.log("Sending Data:", {
-            userId: user,
-            // imageUrl: imgURL,  
-            prompt,
-            createdAt: Date.now()
-          });
+              console.log("Sending Data:", {
+                userId: userId,
+                userEmail: user,
+                prompt,
+                createdAt: Date.now()
+              });
 
-          const response = await axios.post(imageEndPoint, {
-            userId: user,
-            // imageUrl: imgURL,
-            prompt: prompt,
-            createdAt: new Date(Date.now()).toISOString()
-          })
+              const response = await axios.post(imageEndPoint, {
+                userId: userId,
+                userEmail: user,
+                prompt: prompt,
+                createdAt: new Date(Date.now()).toISOString()
+              })
 
-          if (response.status == 200) {
-            toast.success('Image Saved Successfully', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-              transition: Bounce,
-            });
-          }
-          else {
-            toast.error('Failed to Save Image..!', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-              transition: Bounce,
-            });
+              if (response.status == 200) {
+                toast.success('Image Saved Successfully', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                  transition: Bounce,
+                });
+              }
+              else {
+                toast.error('Failed to Save Image..!', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                  transition: Bounce,
+                });
+              }
+            } catch (e) {
+              console.log(`Internal Server Error : ${e}`);
+              toast.error('Something Went Wrong..!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                transition: Bounce,
+              });
+            }
+            // finally { //if we dont clear state it will saved previous output even if fail to generate
+            //   setBase64Image(false);
+            // }
           }
         }
         else {

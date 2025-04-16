@@ -6,9 +6,8 @@ const imageSchema = new Schema({
         ref : "User",
         required : true
     },
-    imageUrl : {
+    userEmail : {
         type : String,
-        required : true
     },
     prompt : {
         type : String

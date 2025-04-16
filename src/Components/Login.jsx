@@ -45,9 +45,9 @@ const Login = () => {
     }
 
     useEffect(() => {
-        const user = localStorage.getItem('userEmail');
+        const user = localStorage.getItem('userRole');
         console.log(user);
-        if(user === "admin115@gmail.com") {
+        if(user === "Admin") {
             navigate("/Admin/Index");
         }
         else if(user) {
@@ -78,9 +78,9 @@ const Login = () => {
                 email: formData.email,
                 password: formData.password,
                 confirmPassword: formData.confirmPassword
-            })
-
+            })          
             if (response.status == 200) {
+                const {email, _id ,role} = response.data.accountInfo;
                 toast.success('Register Successfully', {
                     position: "top-right",
                     autoClose: 5000,
@@ -93,7 +93,10 @@ const Login = () => {
                     transition: Bounce,
                 });
                 setFormdata({ email: '', password: '', confirmPassword: '' })
-                localStorage.setItem("userEmail", formData.email)
+                localStorage.setItem("userRole", role)
+                localStorage.setItem("userEmail", email)
+                localStorage.setItem("userId", _id)
+                console.log("Role : ",role)
                 navigate("/");
             }
         } catch (e) {
@@ -150,8 +153,10 @@ const Login = () => {
                 email: loginData.email,
                 password: loginData.password
             })
-
+            // console.log(response.data);
             if (response.status == 200) {
+                const {_id,role} = response.data.loggedInfo; //Destructuring
+                console.log(response.data.loggedInfo);
                 toast.success('Login Successfully', {
                     position: "top-right",
                     autoClose: 5000,
@@ -165,6 +170,10 @@ const Login = () => {
                 });
                 setLoginData({ email: '', password: '' })
                 localStorage.setItem("userEmail", loginData.email)
+                localStorage.setItem("userRole", role)
+                localStorage.setItem("userId", _id)
+                console.log(response.data.loggedInfo._id);
+                console.log(role);
                 navigate("/");
             }
         } catch (e) {
@@ -217,10 +226,10 @@ const Login = () => {
                     exit={{ opacity: 0, y: -50 }}
                     transition={{ duration: 1.0, delay: 1 }}
                 >
-                    <div className="icons absolute left-[12%] top-[10%] text-[4rem] phs:text-[3rem] phs:left-[5%]">
+                    <div className="icons absolute left-[16%] top-[10%] text-[4rem] phs:text-[3rem] phs:left-[5%]">
                         <FontAwesomeIcon icon={faMicrochip} className='text-white' />
                     </div>
-                    <div className="icons absolute right-[12%] bottom-[5%] text-[4rem] phs:text-[3rem] phs:right-[5%]">
+                    <div className="icons absolute right-[16%] bottom-[15%] text-[4rem] phs:text-[3rem] phs:right-[5%]">
                         <FontAwesomeIcon icon={faMicrochip} className='text-[#84bdae]' />
                     </div>
                 </motion.div>

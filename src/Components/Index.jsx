@@ -19,6 +19,17 @@ const Index = () => {
       history('/login')
     }
   }
+
+  const naviatetomyStudio = (e) => {
+    e.preventDefault();
+    const user = localStorage.getItem('userEmail')
+    if(user) {
+      history('/myStudio')
+    }
+    else {
+      history('/login')
+    }
+  }
   return (
     <CustomLayout>
       <section className='relative overflow-x-hidden'>
@@ -112,7 +123,7 @@ const Index = () => {
                     </Link>
                   </div>
                   <div className="secondBtn p-3 shadow-customInner p-3 rounded-[17%] border-white border-[0.01em]">
-                    <Link>
+                    <Link onClick={naviatetomyStudio}>
                       <div className="icon">
                         <FontAwesomeIcon icon={faFolder} className='text-white'></FontAwesomeIcon>
                       </div>

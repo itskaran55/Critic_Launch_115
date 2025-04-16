@@ -17,6 +17,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("userEmail")
+    localStorage.removeItem("userRole")
+    localStorage.removeItem("userId")
   }
 
   const toggleBtn = () => {

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import CustomLayout from '../Layout/CustomLayout'
 import { useNavigate } from 'react-router-dom'
-import { ToastContainer, toast, Bounce } from 'react-toastify';
 import axios from 'axios';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AdminCustomLayout from './Layout/AdminCustomLayout';
 
 const Index = () => {
   const [users, setUsers] = useState([]);
@@ -68,8 +68,59 @@ const Index = () => {
 
     fetchUser();
   }, [])
+
+  // Delete User
+
+  const deleteUser = async (userId) => {
+    console.log("Deleted....")
+    try {
+      const response = await axios.delete(`http://localhost:5000/api/deleteUser/${userId}`)
+      if (response.status == 200) {
+        // localStorage.removeItem("userEmail");
+        setUsers((prevUsers) => prevUsers.filter(user => user._id != userId));
+        toast.success('User Deleted Successfully', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      }
+    } catch (e) {
+      console.log(`Internal Server Error : ${e}`)
+      if (e.response && e.response.status == 500) {
+        toast.error(e.response.data.message || "Internal error!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+      else {
+        toast.error('Internal Server Error..!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+        });
+      }
+    }
+  }
   return (
-    <CustomLayout>
+    <AdminCustomLayout>
       <section className='mainAdminPannel'>
         <div className="AdminPannel flex justify-center items-center flex-col gap-5">
           <div className="title bg-gradient-to-l from-blue-500 to-green-500 text-2xl font-bold text-transparent bg-clip-text">
@@ -94,7 +145,7 @@ const Index = () => {
                           <td className="border py-2 px-4">{index + 1}</td>
                           <td className="border py-2 px-4">{user.email}</td>
                           <td className="border py-2 px-4">{user.role}</td>
-                          <td className="border py-2 px-4"><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon></td>
+                          <td className="border py-2 px-4 cursor-pointer" onClick={() => deleteUser(user._id)}><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon></td>
                         </tr>
                       ))}
                     </tbody>
@@ -118,7 +169,7 @@ const Index = () => {
         //transition={Bounce}
         />
       </section>
-    </CustomLayout>
+    </AdminCustomLayout>
   )
 }
 

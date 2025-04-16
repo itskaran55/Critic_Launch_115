@@ -4,7 +4,7 @@ import { ToastContainer, toast, Bounce } from 'react-toastify';
 
 const LeonardoAPI = async (prompt, numImages = 4) => {
 
-    const APIKey = process.env.image_api
+    const APIKey = "sk-eS0UF0o1GPaV5PNXCf3evejSHEB4ByDutIXKUU8XqG3IglHz"
     const baseURL = 'https://api.stability.ai/v2beta/stable-image/generate/core';
     try {
         const response = [];

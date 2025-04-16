@@ -32,10 +32,13 @@ router.post("/register", async (req,res) => {
         const saltValue = 5;
         const hashPassword = await b.hash(password, saltValue);
 
-        const newUser = new userData({email, password: hashPassword})
+        const newUser = new userData({email, password: hashPassword, role : "User"})
         await newUser.save()
 
-        res.status(200).json({message : "User Registered Successfully"})
+        res.status(200).json({
+            message : "User Registered Successfully",
+            accountInfo : {email : newUser.email, _id : newUser._id ,role : newUser.role}
+        })
 
 
     } catch (error) {
@@ -58,6 +61,7 @@ router.post("/login", async(req,res) => {
         }
 
         const existingUser = await userData.findOne({email});
+        console.log(existingUser.role);
 
         if(!existingUser) {
             return res.status(400).json({message : "Please Register your-self First..!"});
@@ -69,7 +73,13 @@ router.post("/login", async(req,res) => {
             return res.status(400).json({ message: "Wrong Password! Please try again." });
         }
 
-        res.status(200).json({ message: "Login Successfully" });
+        res.status(200).json({ 
+            message: "Login Successfully",
+            loggedInfo : {
+                _id : existingUser._id,
+                role : existingUser.role
+            }
+         });
 
     } catch (error) {
         res.status(500).json({message : "Server Error : ", error : error.message})
@@ -87,6 +97,22 @@ router.get("/allUsers", async (req,res) => {
     }
 })
 
-export default router;
-
 // Delete Records
+
+router.delete("/deleteUser/:id", async (req,res) => {
+    try {
+        console.log(req.params);
+        const userId = req.params.id;
+        const user = await userData.findByIdAndDelete(userId);
+
+        if(!user) {
+            return res.status(404).json({message : "User Not Found"})
+        }
+
+        res.status(200).json({message : "User Deleted Successfully"})
+    } catch (e) {
+        res.status(500).json({message : "Server Error : ", error : e.message})
+    }
+})
+
+export default router;
